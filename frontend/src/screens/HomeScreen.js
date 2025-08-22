@@ -1,38 +1,57 @@
 //importaciones
-import React from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import  { useContext } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { UserContext } from '../context/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 //nuestro componente principal
 const HomeScreen = () => {
+
+    const navigation = useNavigation();
+    const { user } = useContext(UserContext);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Bienvenido a la Clínica
-                Pediátrica Karla Romero</Text>
+                Pediátrica, { user?.username }</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => { }}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
+                <MaterialCommunityIcons name="account" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Perfil</Text>
             </TouchableOpacity>
 
             <View style={styles.spacer} />
 
+               <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Patients')}>
+                <MaterialCommunityIcons name="baby-carriage" size={24} color={"#ffff"} />
+                <Text style={styles.buttonText} >Gestión de pacientes</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
             <TouchableOpacity style={styles.button} onPress={() => { }}>
+                <MaterialCommunityIcons name="cog" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Configuración</Text>
             </TouchableOpacity>
 
             <View style={styles.spacer} />
 
             <TouchableOpacity style={styles.button} onPress={() => { }}>
+                <MaterialCommunityIcons name="calendar" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Citas</Text>
             </TouchableOpacity>
 
             <View style={styles.spacer} />
 
             <TouchableOpacity style={styles.button} onPress={() => { }}>
+                <MaterialCommunityIcons name="clipboard-account" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Historial Médico</Text>
             </TouchableOpacity>
             <View style={styles.spacer} />
 
             <TouchableOpacity style={styles.buttonDanger} onPress={() => { }}>
+                <MaterialCommunityIcons name="logout" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Cerrar Sesion</Text>
             </TouchableOpacity>
         </View>
@@ -67,11 +86,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         alignSelf: 'center',
+        flexDirection: 'row',
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+        marginLeft: 10,
     },
       buttonDanger: {
         width: '100%',
@@ -82,6 +103,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         alignSelf: 'center',
+        flexDirection: 'row',
     },
 });
 //exportamos nuestro componente

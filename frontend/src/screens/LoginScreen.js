@@ -1,15 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { UserContext } from '../context/UserContext';
+import { useNavigation } from '@react-navigation/native';
+
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     
     const [isFocused1, setIsFocused1] = useState(false);
     const [isFocused2, setIsFocused2] = useState(false);
+    const { setUser } = useContext(UserContext);
+    const navigation = useNavigation();
 
     const handleLogin = () => {
+        //si falta algun campo
+        if(!username || !password) {
+            alert('Completa todos los campos');
+            return;
+        }
 
-        console.log("Username:", username, "Password:", password);
+        setUser({username});
+        //navegar a la pantalla de inicio
+        navigation.navigate('Home');
+
     };
     return (
         <View style={styles.container}>
