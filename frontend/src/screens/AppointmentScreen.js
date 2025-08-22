@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
+import { MaskedTextInput } from "react-native-mask-text";
+
 
 const AppointmentScreen = () => {
     const [appointments, setAppointments] = useState([]);
@@ -13,7 +15,7 @@ const AppointmentScreen = () => {
 
     const addAppointment = () => {
         if (!fecha || !hora || !paciente || !motivo) {
-            alert('Por favor, complete todos los campos');  
+            alert('Por favor, complete todos los campos');
             return;
         }
         const nuevaCita = {
@@ -24,7 +26,7 @@ const AppointmentScreen = () => {
             motivo,
         };
         setAppointments([...appointments, nuevaCita]);
-        setModalVisible(false); 
+        setModalVisible(false);
         setFecha('');
         setHora('');
         setPaciente('');
@@ -39,6 +41,7 @@ const AppointmentScreen = () => {
                 data={appointments}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ width: '100%' }}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 renderItem={({ item }) => (
                     <View style={styles.card}>
                         <Text style={styles.cardText}><Text style={styles.bold}>Fecha:</Text> {item.fecha}</Text>
@@ -64,19 +67,25 @@ const AppointmentScreen = () => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Agregar Nueva Cita</Text>
 
-                        <TextInput
-                            style={styles.input}
+                        <MaskedTextInput
+                            mask="9999-99-99"
                             placeholder="YYYY-MM-DD"
+                            keyboardType="numeric"
+                            style={styles.input}
                             value={fecha}
-                            onChangeText={setFecha}
+                            onChangeText={(text) => setFecha(text)}
                         />
 
-                        <TextInput
+                        <MaskedTextInput
+                            mask="99:99"
+                            placeholder="HH:MM"
+                            keyboardType="numeric"
                             style={styles.input}
-                            placeholder="HH:MM AM/PM"
                             value={hora}
-                            onChangeText={setHora}
+                            onChangeText={(text) => setHora(text)}
                         />
+
+
 
                         <TextInput
                             style={styles.input}
@@ -94,7 +103,7 @@ const AppointmentScreen = () => {
 
                         <View style={styles.modalButtons}>
 
-                            <TouchableOpacity style={styles.addButtonApp} onPress={() => setModalVisible(addAppointment)}>
+                            <TouchableOpacity style={styles.addButtonApp} onPress={() => addAppointment()}>
                                 <Text style={styles.addButtonText}>Agregar</Text>
                             </TouchableOpacity>
 
@@ -113,7 +122,6 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center',
         padding: 20,
         paddingTop: 50,
         backgroundColor: '#f5f5f5',
@@ -128,7 +136,6 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#fff',
         padding: 15,
-        marginVertical: 8,
         borderRadius: 10,
         width: '100%',
         shadowColor: '#000',

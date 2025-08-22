@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Switch, Button, Alert, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const SettingsScreen = () => {
     const [notificacionesActivadas, setNotificacionesActivadas] = useState(true);
@@ -13,32 +14,64 @@ const SettingsScreen = () => {
         <View style={styles.container}>
             <Text style={styles.title}>Configuración</Text>
 
-            <View style={styles.item}>
-                <Text style={styles.label}>Notificaciones</Text>
-                <Switch
-                    value={notificacionesActivadas}
-                    onValueChange={setNotificacionesActivadas}
-                />
-            </View>
 
-            <View style={styles.item}>
-                <Text style={styles.label}>Modo Oscuro</Text>
-                <Switch
-                    value={modoOscuro}
-                    onValueChange={setModoOscuro}
-                />
-            </View>
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="user" size={18} color="#fff" style={{ marginRight: 8 }} />
+                <Text style={styles.buttonText}>Editar perfil</Text>
+            </TouchableOpacity>
 
-            <View style={styles.separador} />
 
-            <Text style={styles.seccion}>Cuenta</Text>
+            <View style={styles.spacer} />
 
-            <View style={styles.botones}>
-                <Button title="Cambiar contraseña" onPress={() => Alert.alert('Funcionalidad', 'Aquí cambiarías tu contraseña.')} />
-            </View>
-            <View style={styles.botones}>
-                <Button title="Cerrar sesión" color="#e74c3c" onPress={handleCerrarSesion} />
-            </View>
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="bell" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Notificaciones</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="brush" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Preferencia de Tema</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="language" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Idioma</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => Alert.alert('Funcionalidad', 'Aquí cambiarías tu contraseña.')} >
+                <Icon name="lock" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Cambiar contraseña</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="info" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Acerca de la Aplicación</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={handleCerrarSesion}>
+                <Icon name="door-open" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Cerrar Sesión</Text>
+            </TouchableOpacity>
+
+            <View style={styles.spacer} />
+
+            <TouchableOpacity style={[styles.buttonDeleteAcc, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
+                <Icon name="trash" size={18} color="#fff" style={styles.icon} />
+                <Text style={styles.buttonText}>Eliminar cuenta</Text>
+            </TouchableOpacity>
+
         </View>
     );
 };
@@ -86,6 +119,37 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#ccc',
         marginVertical: 20,
+    },
+    button: {
+        width: '100%',
+        backgroundColor: '#005187',
+        borderRadius: 10,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        alignSelf: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    buttonDeleteAcc: {
+        width: '100%',
+        backgroundColor: '#d9534f',
+        borderRadius: 10,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        alignSelf: 'center',
+    },
+    spacer: {
+        height: 20,
+    },
+    icon: {
+        marginRight: 10,
     },
 });
 
