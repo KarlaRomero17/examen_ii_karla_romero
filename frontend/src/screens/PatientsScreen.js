@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, Button, ScrollView, StyleSheet, FlatList, TouchableOpacity } from
     'react-native';
 
-const UserInterfaceScreen = () => {
+const PatientsScreen = () => {
     const [inputText, setInputText] = useState('');
     const [patients, setPatients] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
@@ -165,4 +165,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default UserInterfaceScreen;
+export default PatientsScreen;
