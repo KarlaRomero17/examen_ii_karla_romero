@@ -1,7 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = () => {
     const [username, setUsername] = useState('');
@@ -12,11 +14,26 @@ const LoginScreen = () => {
     const { setUser } = useContext(UserContext);
     const navigation = useNavigation();
 
-    const handleLogin = () => {
+    //verificar si hay token 
+    useEffect(() => {
+        const checkToken = async() => {
+            const token = await AsyncStorage.getItem('token');
+            if(token){
+                navigation.replace('Main');
+            }
+        }
+        checkToken();
+    }, []);
+
+    const handleLogin = async () => {
         //si falta algun campo
-        if(!username || !password) {
-            alert('Completa todos los campos');
-            return;
+        if(username && password) {
+            await AsyncStorage.setItem('user', username);
+            await AsyncStorage.setItem('token', 'faketoken12345');
+            navigation.replace('Main');
+
+        }else{
+            alert('Debe ingresar usuario y contraseña');
         }
 
         setUser({username});

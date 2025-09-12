@@ -1,18 +1,37 @@
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Switch, Button, Alert, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const SettingsScreen = () => {
-    const [notificacionesActivadas, setNotificacionesActivadas] = useState(true);
-    const [modoOscuro, setModoOscuro] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     const handleCerrarSesion = () => {
         Alert.alert('Sesión cerrada', 'Has cerrado sesión exitosamente.');
     };
 
+
+    useEffect(() => {
+        const loadSetting = async () => {
+            const storedDarkMode = await AsyncStorage.getItem('darkMode');
+            if (storedDarkMode !== null) {
+                setDarkMode(storedDarkMode === 'true');
+            }
+        }
+        loadSetting();
+
+    }, []);
+
+    const toggleDarkMode = async () => {
+        const newValue = !darkMode;
+        setDarkMode(newValue);
+        await AsyncStorage.setItem('darkMode', newValue.toString());
+
+    }
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Configuración</Text>
+        <View style={[styles.container, { backgroundColor: darkMode ? '#222' : '#EEF4FF' }]}>
+
+            <Text style={[styles.title, { color: darkMode ? '#fff' : '#2C3E50' }]}>Configuración</Text>
 
 
             <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
@@ -31,9 +50,12 @@ const SettingsScreen = () => {
 
             <View style={styles.spacer} />
 
-            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center' }]} onPress={() => { }}>
-                <Icon name="brush" size={18} color="#fff" style={styles.icon} />
-                <Text style={styles.buttonText}>Preferencia de Tema</Text>
+            <TouchableOpacity style={[styles.button, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 15 }]} onPress={() => { }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Icon name="brush" size={18} color="#fff" style={styles.icon} />
+                    <Text style={styles.buttonText}>Preferencia de Tema</Text>
+                </View>
+                <Switch value={darkMode} onValueChange={toggleDarkMode} />
             </TouchableOpacity>
 
             <View style={styles.spacer} />
@@ -79,7 +101,6 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#EEF4FF',
         padding: 20,
         justifyContent: 'center',
     },
@@ -87,7 +108,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         marginBottom: 30,
-        color: '#2C3E50',
         textAlign: 'center',
     },
     item: {

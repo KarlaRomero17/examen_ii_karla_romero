@@ -41,7 +41,7 @@ const AppTabs = () => {
                 }
             }
             />
-            <Tab.Screen name="Configuración" component={SettingsScreen} options={
+            <Tab.Screen name="Configuracion" component={SettingsScreen} options={
                 {
                     tabBarIcon: ({color, size}) => (
                         <MaterialCommunityIcons name="cog" size={size} color={color} />

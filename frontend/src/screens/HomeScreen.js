@@ -1,20 +1,40 @@
 //importaciones
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //nuestro componente principal
 const HomeScreen = () => {
 
     const navigation = useNavigation();
-    const { user } = useContext(UserContext);
+    // const { user } = useContext(UserContext);
+    const [ user, setUser] = useState('');
+
+    useEffect(() => {
+        const loadUser = async () => {
+            const storedUser = await AsyncStorage.getItem('user');
+            if(storedUser){
+                setUser(storedUser);
+            }
+        }
+        loadUser();
+    }, []);
+
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('user');
+        navigation.replace('Login')
+
+    }
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Bienvenido a la Clínica
-                Pediátrica, {user?.username}</Text>
+                Pediátrica, {user}</Text>
 
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
                 <MaterialCommunityIcons name="account" size={24} color={"#ffff"} />
@@ -58,7 +78,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
             <View style={styles.spacer} />
 
-            <TouchableOpacity style={styles.buttonDanger} onPress={() => { }}>
+            <TouchableOpacity style={styles.buttonDanger} onPress={() => { handleLogout() }}>
                 <MaterialCommunityIcons name="logout" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Cerrar Sesion</Text>
             </TouchableOpacity>
