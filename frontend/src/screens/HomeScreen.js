@@ -1,6 +1,6 @@
 //importaciones
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import  { useContext } from 'react';
+import { useContext } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,7 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Bienvenido a la Clínica
-                Pediátrica, { user?.username }</Text>
+                Pediátrica, {user?.username}</Text>
 
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
                 <MaterialCommunityIcons name="account" size={24} color={"#ffff"} />
@@ -23,14 +23,22 @@ const HomeScreen = () => {
 
             <View style={styles.spacer} />
 
-               <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Patients')}>
+            <TouchableOpacity style={styles.button} onPress={() =>
+                navigation.navigate('Main', {
+                    screen: 'Pacientes'
+                })
+            }>
                 <MaterialCommunityIcons name="baby-carriage" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Gestión de pacientes</Text>
             </TouchableOpacity>
 
             <View style={styles.spacer} />
 
-            <TouchableOpacity style={styles.button} onPress={() => { }}>
+            <TouchableOpacity style={styles.button} onPress={() => 
+                 navigation.navigate('Main', {
+                    screen: 'Configuracion'
+                })
+            }>
                 <MaterialCommunityIcons name="cog" size={24} color={"#ffff"} />
                 <Text style={styles.buttonText} >Configuración</Text>
             </TouchableOpacity>
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 10,
     },
-      buttonDanger: {
+    buttonDanger: {
         width: '100%',
         backgroundColor: '#d9534f',
         borderRadius: 10,

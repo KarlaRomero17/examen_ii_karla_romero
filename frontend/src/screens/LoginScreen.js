@@ -21,7 +21,7 @@ const LoginScreen = () => {
 
         setUser({username});
         //navegar a la pantalla de inicio
-        navigation.navigate('Home');
+        navigation.replace('Main')
 
     };
     return (
