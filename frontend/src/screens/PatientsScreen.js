@@ -1,23 +1,47 @@
 
-import { useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet, FlatList, TouchableOpacity } from
+import { useSQLiteContext } from 'expo-sqlite';
+import { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet, FlatList, TouchableOpacity, Alert } from
     'react-native';
 
 const PatientsScreen = () => {
+    const db = useSQLiteContext();
     const [inputText, setInputText] = useState('');
     const [patients, setPatients] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
-    const addPatient = () => {
+    //mostrar
+    useEffect(() => {
+        loadPatients();
+
+    }, []);
+
+    const loadPatients = async () => {
+        const result = await db.getAllAsync("SELECT * FROM patients");
+        setPatients(result);
+    }
+
+    const addPatient = async () => {
         if (inputText.trim()) {
-            const newPatient = {
-                id: Date.now().toString(),
-                name: inputText.trim(),
-            };
+            if (editingId) { //editando
+                await db.runAsync("UPDATE patients SET name = ? WHERE id = ? ",
+                    [inputText, editingId]
+                );
+                setEditingId(null);
+                Alert.alert("Exito", "Paciente actualizado con éxito");
+            } else {//agregando
+                await db.runAsync("INSERT INTO patients (name) VALUES (?) ",
+                    [inputText]
+                );
 
-            setPatients([...patients, newPatient]);
-            setInputText('');
+                Alert.alert("Exito", "Paciente agregado con éxito");
+            }
+            setInputText("");
+            loadPatients();
 
+        } else {
+            Alert.alert("Error", "El nombre no puede estar vacio");
         }
 
     }
@@ -26,12 +50,15 @@ const PatientsScreen = () => {
         const patientToEdit = patients.find(patient => patient.id === id);
         if (patientToEdit) {
             setInputText(patientToEdit.name);
-            deletePatient(id);
+            setEditingId(id);
         }
 
     }
-    const deletePatient = (id) => {
-        setPatients(patients.filter((patient) => patient.id !== id));
+    const deletePatient = async (id) => {
+        await db.runAsync("DELETE FROM patients WHERE id = ?", [id]);
+        loadPatients();
+
+        Alert.alert("Exito", "Paciente eliminado con éxito");
     }
 
     return (
@@ -48,7 +75,9 @@ const PatientsScreen = () => {
             />
 
             <TouchableOpacity style={styles.addButton} onPress={addPatient}>
-                <Text style={styles.addButtonText} >Agregar paciente</Text>
+                <Text style={styles.addButtonText} >
+                    {editingId ? "Actualizar Paciente" : "Agregar Paciente"}
+                </Text>
 
             </TouchableOpacity>
 

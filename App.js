@@ -13,21 +13,24 @@ import HomeScreen from './frontend/src/screens/HomeScreen';
 import AppDrawer from './AppNavigation';
 import AppTabs from './AppNavigation';
 
-
+import { SQLiteProvider } from 'expo-sqlite';
+import { initializeDatabase } from './frontend/src/db/database';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <UserProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Main" component={AppTabs} />
-    
+      <SQLiteProvider databaseName='clinicaPediatrica.db' onInit={initializeDatabase}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Main" component={AppTabs} />
 
 
-        </Stack.Navigator>
-      </NavigationContainer>
+
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SQLiteProvider>
     </UserProvider>
   );
 
