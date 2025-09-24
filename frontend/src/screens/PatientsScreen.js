@@ -11,6 +11,11 @@ const PatientsScreen = () => {
     const [isFocused, setIsFocused] = useState(false);
     const [editingId, setEditingId] = useState(null);
 
+    const [address, setAddress] = useState('');
+    const [telephone, setTelephone] = useState('');
+    const [birthdate, setBirthdate] = useState('');
+    const [email, setEmail] = useState('');
+
     //mostrar
     useEffect(() => {
         loadPatients();
@@ -23,37 +28,50 @@ const PatientsScreen = () => {
     }
 
     const addPatient = async () => {
-        if (inputText.trim()) {
-            if (editingId) { //editando
-                await db.runAsync("UPDATE patients SET name = ? WHERE id = ? ",
-                    [inputText, editingId]
+        if (inputText.trim() && address.trim() && telephone.trim() && birthdate.trim() && email.trim()) {
+            if (editingId) {
+                // Editando
+                await db.runAsync(
+                    "UPDATE patients SET name=?, address=?, telephone=?, birthdate=?, email=? WHERE id=?",
+                    [inputText, address, telephone, birthdate, email, editingId]
                 );
                 setEditingId(null);
-                Alert.alert("Exito", "Paciente actualizado con éxito");
-            } else {//agregando
-                await db.runAsync("INSERT INTO patients (name) VALUES (?) ",
-                    [inputText]
+                Alert.alert("Éxito", "Paciente actualizado con éxito");
+            } else {
+                // Agregando
+                await db.runAsync(
+                    "INSERT INTO patients (name, address, telephone, birthdate, email) VALUES (?, ?, ?, ?, ?)",
+                    [inputText, address, telephone, birthdate, email]
                 );
-
-                Alert.alert("Exito", "Paciente agregado con éxito");
+                Alert.alert("Éxito", "Paciente agregado con éxito");
             }
-            setInputText("");
+
+            // Limpiar campos
+            setInputText('');
+            setAddress('');
+            setTelephone('');
+            setBirthdate('');
+            setEmail('');
+
             loadPatients();
-
         } else {
-            Alert.alert("Error", "El nombre no puede estar vacio");
+            Alert.alert("Error", "Todos los campos son obligatorios");
         }
-
-    }
+    };
 
     const editPatient = (id) => {
-        const patientToEdit = patients.find(patient => patient.id === id);
+        const patientToEdit = patients.find(p => p.id === id);
         if (patientToEdit) {
             setInputText(patientToEdit.name);
+            setAddress(patientToEdit.address);
+            setTelephone(patientToEdit.telephone);
+            setBirthdate(patientToEdit.birthdate);
+            setEmail(patientToEdit.email);
             setEditingId(id);
         }
+    };
 
-    }
+
     const deletePatient = async (id) => {
         await db.runAsync("DELETE FROM patients WHERE id = ?", [id]);
         loadPatients();
@@ -73,6 +91,38 @@ const PatientsScreen = () => {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
             />
+            <TextInput
+                style={[styles.input, { borderWidth: isFocused ? 3 : 1 }]}
+                placeholder='Dirección'
+                value={address}
+                onChangeText={setAddress}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+            />
+            <TextInput
+                style={[styles.input, { borderWidth: isFocused ? 3 : 1 }]}
+                placeholder='Teléfono'
+                value={telephone}
+                onChangeText={setTelephone}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+            />
+            <TextInput
+                style={[styles.input, { borderWidth: isFocused ? 3 : 1 }]}
+                placeholder='Fecha nacimiento'
+                value={birthdate}
+                onChangeText={setBirthdate}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+            />
+            <TextInput
+                style={[styles.input, { borderWidth: isFocused ? 3 : 1 }]}
+                placeholder='Correo electrónico'
+                value={email}
+                onChangeText={setEmail}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+            />
 
             <TouchableOpacity style={styles.addButton} onPress={addPatient}>
                 <Text style={styles.addButtonText} >
@@ -86,17 +136,23 @@ const PatientsScreen = () => {
 
             <FlatList
                 data={patients}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{ alignItems: 'center', width: '100%' }}
                 renderItem={({ item }) => (
                     <View style={styles.itemContainer}>
-                        <Text style={styles.itemText}>{item.name}</Text>
+                        <Text style={[styles.itemTitle, styles.itemLabel]}>{item.name}</Text>
+
+                        <Text style={styles.itemText}><Text style={styles.itemLabel}>Dirección:</Text> {item.address}</Text>
+                        <Text style={styles.itemText}><Text style={styles.itemLabel}>Teléfono:</Text> {item.telephone}</Text>
+                        <Text style={styles.itemText}><Text style={styles.itemLabel}>Nacimiento:</Text> {item.birthdate}</Text>
+                        <Text style={styles.itemText}><Text style={styles.itemLabel}>Correo:</Text> {item.email}</Text>
+
                         <View style={styles.buttonGroup}>
                             <TouchableOpacity style={styles.editButton} onPress={() => editPatient(item.id)}>
-                                <Text style={styles.addButtonText} >Editar</Text>
+                                <Text style={styles.buttonText}>Editar</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.deleteButton} onPress={() => deletePatient(item.id)}>
-                                <Text style={styles.addButtonText} >Eliminar</Text>
+                                <Text style={styles.buttonText}>Eliminar</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -151,6 +207,9 @@ const styles = StyleSheet.create({
     counter: {
         margin: 15,
         fontSize: 18,
+        fontWeight: 'bold',
+    },
+    itemLabel: {
         fontWeight: 'bold',
     },
     itemContainer: {
