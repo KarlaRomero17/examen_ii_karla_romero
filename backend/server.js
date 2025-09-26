@@ -5,14 +5,13 @@ const cors = require('cors');
 
 const app = express();
 
-
+//configuraciones a servidor http
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/sistema-clinica', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect('mongodb://localhost:27017/sistema-clinica')
+.then(() => console.log('Conexion a MOngoDB exitosa')) 
+.catch( err => console.error('Error al conectar a MongoDB: ', err));
 
 // Rutas
 const authRoutes = require('./routes/auth');
