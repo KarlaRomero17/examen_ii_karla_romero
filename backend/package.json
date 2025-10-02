@@ -1,10 +1,10 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Backend de mi aplicacion pedriatrica ",
+  "description": "Backend de mi aplicacion ",
   "repository": {
     "type": "git",
-    "url": "Backedn de mi aplicacion pedriatrica"
+    "url": "Backedn de mi aplicacion"
   },
   "license": "ISC",
   "author": "Karla Romero",
