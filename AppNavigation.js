@@ -1,62 +1,194 @@
-
-import { createDrawerNavigator } from "@react-navigation/drawer";
-
-import HelpScreen from "./frontend/src/screens/HelpScreeen";
-import HomeScreen from "./frontend/src/screens/HomeScreen";
-import PatientsScreen from "./frontend/src/screens/PatientsScreen";
-import SettingsScreen from "./frontend/src/screens/SettingsScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Alert } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Importa las pantallas
+import HomeScreen from "./frontend/src/screens/HomeScreen";
+import DataEntryScreen from "./frontend/src/screens/DataEntryScreen";
+import ListScreen from "./frontend/src/screens/ListScreen";
+import ProfileScreen from "./frontend/src/screens/ProfileScreen";
 
-const Drawer = createDrawerNavigator();
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-const AppDrawer = () => {
-    return (
-        <Drawer.Navigator>
-            <Drawer.Screen name="Principal" component={HomeScreen} />
-            <Drawer.Screen name="Pacientes" component={PatientsScreen} />
-            <Drawer.Screen name="Configuracion" component={SettingsScreen} />
-            <Drawer.Screen name="Ayuda" component={HelpScreen} />
-        </Drawer.Navigator>
-    );
+// Función de logout reutilizable
+const handleLogout = (navigation) => {
+  Alert.alert(
+    "Cerrar Sesión",
+    "¿Estás seguro de que quieres salir?",
+    [
+      {
+        text: "Cancelar",
+        style: "cancel"
+      },
+      { 
+        text: "Salir", 
+        onPress: async () => {
+          await AsyncStorage.removeItem('token');
+          await AsyncStorage.removeItem('user');
+          navigation.replace('Login');
+        }
+      }
+    ]
+  );
 };
 
-const AppTabs = () => {
-    return (
-        <Tab.Navigator>
-            <Tab.Screen name="Principal" component={HomeScreen} options={
-                {
-                    tabBarIcon: ({color, size}) => (
-                        <MaterialCommunityIcons name="home" size={size} color={color} />
-                    )
-                }
-            }/>
-            <Tab.Screen name="Pacientes" component={PatientsScreen}  options={
-                {
-                    tabBarIcon: ({color, size}) => (
-                        <MaterialCommunityIcons name="baby-carriage" size={size} color={color} />
-                    )
-                }
-            }
+// Componente de botón de logout para header
+const LogoutButton = ({ navigation }) => (
+  <MaterialCommunityIcons 
+    name="logout" 
+    size={24} 
+    color="#FF6B6B" 
+    style={{ marginRight: 15 }}
+    onPress={() => handleLogout(navigation)}
+  />
+);
+
+// Stack para Películas
+const MoviesStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { 
+          backgroundColor: '#0A0F1C' 
+        },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Stack.Screen 
+        name="ListaPeliculas" 
+        component={ListScreen}
+        options={{ 
+          title: "Mis Películas",
+          headerRight: () => <LogoutButton navigation={navigation} />,
+          headerLeft: () => (
+            <MaterialCommunityIcons 
+              name="menu" 
+              size={24} 
+              color="#FFFFFF" 
+              style={{ marginLeft: 15 }}
+              onPress={() => navigation.toggleDrawer()} // Si usas drawer
             />
-            <Tab.Screen name="Configuracion" component={SettingsScreen} options={
-                {
-                    tabBarIcon: ({color, size}) => (
-                        <MaterialCommunityIcons name="cog" size={size} color={color} />
-                    )
-                }
-            }/>
-            <Tab.Screen name="Ayuda" component={HelpScreen} options={
-                {
-                    tabBarIcon: ({color, size}) => (
-                        <MaterialCommunityIcons name="help" size={size} color={color} />
-                    )
-                }
-            }/>
-        </Tab.Navigator>
-    );
+          )
+        }}
+      />
+      <Stack.Screen 
+        name="AgregarPelicula" 
+        component={DataEntryScreen}
+        options={{ 
+          title: "Agregar Película",
+          headerRight: () => <LogoutButton navigation={navigation} />,
+          headerBackTitle: "Atrás"
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// Stack para Inicio
+const HomeStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: '#0A0F1C' },
+        headerTintColor: '#FFFFFF',
+      }}
+    >
+      <Stack.Screen 
+        name="InicioPrincipal" 
+        component={HomeScreen}
+        options={{ 
+          title: "CineApp",
+          headerRight: () => <LogoutButton navigation={navigation} />,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// Stack para Perfil
+const ProfileStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: '#0A0F1C' },
+        headerTintColor: '#FFFFFF',
+      }}
+    >
+      <Stack.Screen 
+        name="MiPerfil" 
+        component={ProfileScreen}
+        options={{ 
+          title: "Mi Perfil",
+          headerRight: () => <LogoutButton navigation={navigation} />,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// Tab Navigator principal
+const AppTabs = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#0A0F1C',
+        },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        tabBarStyle: {
+          backgroundColor: '#1A1F2E',
+          borderTopColor: '#2A2F3E',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarActiveTintColor: '#FF6B6B',
+        tabBarInactiveTintColor: '#8A8D9F',
+      }}
+    >
+      <Tab.Screen 
+        name="Inicio" 
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="home" size={size} color={color} />
+          ),
+          headerShown: false
+        }}
+      />
+      
+      <Tab.Screen 
+        name="Películas" 
+        component={MoviesStack}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="movie" size={size} color={color} />
+          ),
+          headerShown: false
+        }}
+      />
+      
+      <Tab.Screen 
+        name="Perfil" 
+        component={ProfileStack}
+        options={{
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="account" size={size} color={color} />
+          ),
+          headerShown: false
+        }}
+      />
+    </Tab.Navigator>
+  );
 }
 
 export default AppTabs;
