@@ -9,7 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/sistema-clinica')
+mongoose.connect('mongodb://localhost:27017/movies')
 .then(() => console.log('Conexion a MOngoDB exitosa')) 
 .catch( err => console.error('Error al conectar a MongoDB: ', err));
 
