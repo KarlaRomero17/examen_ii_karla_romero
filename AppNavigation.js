@@ -4,7 +4,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Importa las pantallas
 import HomeScreen from "./frontend/src/screens/HomeScreen";
 import DataEntryScreen from "./frontend/src/screens/DataEntryScreen";
 import ListScreen from "./frontend/src/screens/ListScreen";
@@ -13,7 +12,6 @@ import ProfileScreen from "./frontend/src/screens/ProfileScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Función de logout reutilizable
 const handleLogout = (navigation) => {
   Alert.alert(
     "Cerrar Sesión",
@@ -35,7 +33,6 @@ const handleLogout = (navigation) => {
   );
 };
 
-// Componente de botón de logout para header
 const LogoutButton = ({ navigation }) => (
   <MaterialCommunityIcons 
     name="logout" 
@@ -46,7 +43,6 @@ const LogoutButton = ({ navigation }) => (
   />
 );
 
-// Stack para Películas
 const MoviesStack = ({ navigation }) => {
   return (
     <Stack.Navigator
@@ -66,15 +62,6 @@ const MoviesStack = ({ navigation }) => {
         options={{ 
           title: "Mis Películas",
           headerRight: () => <LogoutButton navigation={navigation} />,
-          headerLeft: () => (
-            <MaterialCommunityIcons 
-              name="menu" 
-              size={24} 
-              color="#FFFFFF" 
-              style={{ marginLeft: 15 }}
-              onPress={() => navigation.toggleDrawer()} // Si usas drawer
-            />
-          )
         }}
       />
       <Stack.Screen 
@@ -90,7 +77,6 @@ const MoviesStack = ({ navigation }) => {
   );
 };
 
-// Stack para Inicio
 const HomeStack = ({ navigation }) => {
   return (
     <Stack.Navigator
@@ -111,7 +97,6 @@ const HomeStack = ({ navigation }) => {
   );
 };
 
-// Stack para Perfil
 const ProfileStack = ({ navigation }) => {
   return (
     <Stack.Navigator
@@ -132,7 +117,6 @@ const ProfileStack = ({ navigation }) => {
   );
 };
 
-// Tab Navigator principal
 const AppTabs = () => {
   return (
     <Tab.Navigator
@@ -147,12 +131,20 @@ const AppTabs = () => {
         tabBarStyle: {
           backgroundColor: '#1A1F2E',
           borderTopColor: '#2A2F3E',
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 80,
+          paddingBottom: 12,
+          paddingTop: 5,
+        },
+        tabBarItemStyle: {
+          marginTop: 5,
         },
         tabBarActiveTintColor: '#FF6B6B',
         tabBarInactiveTintColor: '#8A8D9F',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginBottom: 4,
+        },
       }}
     >
       <Tab.Screen 
