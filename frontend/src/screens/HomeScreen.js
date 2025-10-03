@@ -143,19 +143,6 @@ const HomeScreen = () => {
                 </Animated.View>
             </ScrollView>
 
-            {/* Botón de logout fijo */}
-            /**
-             */
-            <View style={styles.footer}>
-                <TouchableOpacity 
-                    style={styles.logoutButton}
-                    onPress={handleLogout}
-                    activeOpacity={0.8}
-                >
-                    <MaterialCommunityIcons name="logout" size={20} color="#FFFFFF" />
-                    <Text style={styles.logoutText}>Cerrar Sesión</Text>
-                </TouchableOpacity>
-            </View>
         </View>
     );
 };
