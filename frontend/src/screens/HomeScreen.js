@@ -1,34 +1,42 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useContext, useEffect, useState } from 'react';
-import { 
-    View, 
-    Text, 
-    StyleSheet, 
-    TouchableOpacity, 
+import { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
     ScrollView,
     Animated,
-    Dimensions
 } from 'react-native';
-import { UserContext } from '../context/UserContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSQLiteContext } from 'expo-sqlite';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
+    const db = useSQLiteContext();
     const [user, setUser] = useState('');
+    const [movieStats, setMovieStats] = useState({
+        total: 0,
+        watched: 0,
+        unwatched: 0,
+        favorites: 0
+    });
+
     const scaleAnim = useState(new Animated.Value(0.8))[0];
     const fadeAnim = useState(new Animated.Value(0))[0];
 
     useEffect(() => {
         const loadUser = async () => {
             const storedUser = await AsyncStorage.getItem('user');
-            if(storedUser){
+            if (storedUser) {
                 setUser(storedUser);
             }
         };
         loadUser();
+        loadMovieStats();
 
-        // Animaciones al cargar
         Animated.parallel([
             Animated.timing(scaleAnim, {
                 toValue: 1,
@@ -43,6 +51,30 @@ const HomeScreen = () => {
         ]).start();
     }, []);
 
+    useEffect(() => {
+        if (isFocused) {
+            loadMovieStats();
+        }
+    }, [isFocused]);
+
+    const loadMovieStats = async () => {
+        try {
+            const totalResult = await db.getAllAsync("SELECT COUNT(*) as count FROM movies");
+            const watchedResult = await db.getAllAsync("SELECT COUNT(*) as count FROM movies WHERE watched = 1");
+            const unwatchedResult = await db.getAllAsync("SELECT COUNT(*) as count FROM movies WHERE watched = 0");
+            const favoritesResult = await db.getAllAsync("SELECT COUNT(*) as count FROM movies WHERE rating >= 8");
+
+            setMovieStats({
+                total: totalResult[0].count,
+                watched: watchedResult[0].count,
+                unwatched: unwatchedResult[0].count,
+                favorites: favoritesResult[0].count
+            });
+        } catch (error) {
+            console.error('Error loading movie stats:', error);
+        }
+    };
+
     const handleLogout = async () => {
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('user');
@@ -50,7 +82,7 @@ const HomeScreen = () => {
     };
 
     const MenuCard = ({ icon, title, onPress, color = '#FF6B6B' }) => (
-        <TouchableOpacity 
+        <TouchableOpacity
             style={styles.menuCard}
             onPress={onPress}
             activeOpacity={0.7}
@@ -60,10 +92,10 @@ const HomeScreen = () => {
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.menuTitle}>{title}</Text>
-                <MaterialCommunityIcons 
-                    name="chevron-right" 
-                    size={20} 
-                    color="#8A8D9F" 
+                <MaterialCommunityIcons
+                    name="chevron-right"
+                    size={20}
+                    color="#8A8D9F"
                 />
             </View>
         </TouchableOpacity>
@@ -71,7 +103,6 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.header}>
                 <View style={styles.welcomeContainer}>
                     <Text style={styles.welcome}>¡Hola,</Text>
@@ -80,13 +111,12 @@ const HomeScreen = () => {
                 <Text style={styles.subtitle}>Tu colección de películas te espera</Text>
             </View>
 
-            {/* Contenido principal */}
-            <ScrollView 
+            <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
             >
-                <Animated.View 
+                <Animated.View
                     style={[
                         styles.content,
                         {
@@ -95,54 +125,58 @@ const HomeScreen = () => {
                         }
                     ]}
                 >
-                    {/* Tarjetas de menú */}
                     <View style={styles.menuGrid}>
                         <MenuCard
                             icon="account"
                             title="Perfil"
                             color="#FF6B6B"
-                            onPress={() => navigation.navigate('Profile')}
+                            onPress={() => navigation.navigate('Perfil')}
                         />
 
                         <MenuCard
                             icon="movie-plus"
                             title="Agregar Película"
                             color="#4ECDC4"
-                            onPress={() => navigation.navigate('DataEntryScreen')}
+                            onPress={() => navigation.navigate('Películas', {
+                                screen: 'AgregarPelicula'
+                            })}
                         />
 
                         <MenuCard
                             icon="movie-search"
                             title="Ver Películas"
                             color="#45B7D1"
-                            onPress={() => navigation.navigate('ListScreen')}
+                            onPress={() => navigation.navigate('Películas', {
+                                screen: 'ListaPeliculas'
+                            })}
                         />
                     </View>
 
-                    {/* Sección de estadísticas rápidas */}
                     <View style={styles.statsContainer}>
                         <Text style={styles.statsTitle}>Tu Cine</Text>
                         <View style={styles.statsGrid}>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="star" size={24} color="#FFD700" />
-                                <Text style={styles.statNumber}>0</Text>
+                                <Text style={styles.statNumber}>{movieStats.favorites}</Text>
                                 <Text style={styles.statLabel}>Favoritas</Text>
                             </View>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="eye" size={24} color="#4ECDC4" />
-                                <Text style={styles.statNumber}>0</Text>
+                                <Text style={styles.statNumber}>{movieStats.watched}</Text>
                                 <Text style={styles.statLabel}>Vistas</Text>
                             </View>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="clock" size={24} color="#FF6B6B" />
-                                <Text style={styles.statNumber}>0</Text>
+                                <Text style={styles.statNumber}>{movieStats.unwatched}</Text>
                                 <Text style={styles.statLabel}>Por ver</Text>
                             </View>
+                        </View>
+                        <View style={styles.totalContainer}>
+                            <Text style={styles.totalText}>Total: {movieStats.total} películas</Text>
                         </View>
                     </View>
                 </Animated.View>
             </ScrollView>
-
         </View>
     );
 };
@@ -273,37 +307,17 @@ const styles = StyleSheet.create({
         color: '#8A8D9F',
         textAlign: 'center',
     },
-    footer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: 20,
-        backgroundColor: '#0A0F1C',
+    totalContainer: {
+        marginTop: 15,
+        paddingTop: 15,
         borderTopWidth: 1,
         borderTopColor: '#2A2F3E',
-    },
-    logoutButton: {
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#FF6B6B',
-        borderRadius: 12,
-        padding: 16,
-        shadowColor: '#FF6B6B',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 6,
     },
-    logoutText: {
-        color: '#FFFFFF',
+    totalText: {
         fontSize: 16,
-        fontWeight: '600',
-        marginLeft: 8,
+        fontWeight: 'bold',
+        color: '#FF6B6B',
     },
 });
 
