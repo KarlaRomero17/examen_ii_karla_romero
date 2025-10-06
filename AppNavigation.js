@@ -58,8 +58,8 @@ const handleLogout = (navigation) => {
                 text: "Cancelar",
                 style: "cancel"
             },
-            { 
-                text: "Salir", 
+            {
+                text: "Salir",
                 onPress: async () => {
                     await AsyncStorage.removeItem('token');
                     await AsyncStorage.removeItem('user');
@@ -75,18 +75,18 @@ const HeaderButtons = ({ navigation }) => {
 
     return (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons 
-                name={isDarkTheme ? "weather-sunny" : "weather-night"} 
-                size={24} 
-                color={isDarkTheme ? "#FFFFFF" : "#FF6B6B"} 
+            <MaterialCommunityIcons
+                name={isDarkTheme ? "weather-sunny" : "weather-night"}
+                size={24}
+                color={isDarkTheme ? "#FFFFFF" : "#FF6B6B"}
                 style={{ marginRight: 15 }}
                 onPress={toggleTheme}
             />
-            
-            <MaterialCommunityIcons 
-                name="logout" 
-                size={24} 
-                color="#FF6B6B" 
+
+            <MaterialCommunityIcons
+                name="logout"
+                size={24}
+                color="#FF6B6B"
                 style={{ marginRight: 15 }}
                 onPress={() => handleLogout(navigation)}
             />
@@ -100,7 +100,7 @@ const MoviesStack = ({ navigation }) => {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerStyle: { 
+                headerStyle: {
                     backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF'
                 },
                 headerTintColor: isDarkTheme ? '#FFFFFF' : '#333333',
@@ -109,18 +109,18 @@ const MoviesStack = ({ navigation }) => {
                 },
             }}
         >
-            <Stack.Screen 
-                name="ListaPeliculas" 
+            <Stack.Screen
+                name="ListaPeliculas"
                 component={ListScreen}
-                options={{ 
+                options={{
                     title: "Mis Películas",
                     headerRight: () => <HeaderButtons navigation={navigation} />,
                 }}
             />
-            <Stack.Screen 
-                name="AgregarPelicula" 
+            <Stack.Screen
+                name="AgregarPelicula"
                 component={DataEntryScreen}
-                options={{ 
+                options={{
                     title: "Agregar Película",
                     headerRight: () => <HeaderButtons navigation={navigation} />,
                     headerBackTitle: "Atrás"
@@ -136,20 +136,21 @@ const HomeStack = ({ navigation }) => {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerStyle: { 
+                headerStyle: {
                     backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF'
                 },
                 headerTintColor: isDarkTheme ? '#FFFFFF' : '#333333',
             }}
         >
-            <Stack.Screen 
-                name="InicioPrincipal" 
-                component={HomeScreen}
-                options={{ 
+            <Stack.Screen
+                name="InicioPrincipal"
+                options={{
                     title: "CineApp",
                     headerRight: () => <HeaderButtons navigation={navigation} />,
                 }}
-            />
+            >
+                {(props) => <HomeScreen {...props} isDarkTheme={isDarkTheme} />}
+            </Stack.Screen>
         </Stack.Navigator>
     );
 };
@@ -177,11 +178,11 @@ const ProfileStack = ({ navigation }) => {
 
     if (loading) {
         return (
-            <View style={{ 
-                flex: 1, 
-                justifyContent: 'center', 
+            <View style={{
+                flex: 1,
+                justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF' 
+                backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF'
             }}>
                 <Text style={{ color: isDarkTheme ? '#FFFFFF' : '#333333' }}>
                     Cargando...
@@ -193,26 +194,27 @@ const ProfileStack = ({ navigation }) => {
     return (
         <Stack.Navigator
             screenOptions={{
-                headerStyle: { 
+                headerStyle: {
                     backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF'
                 },
                 headerTintColor: isDarkTheme ? '#FFFFFF' : '#333333',
             }}
         >
             {isAuthenticated ? (
-                <Stack.Screen 
-                    name="MiPerfil" 
-                    component={ProfileScreen}
-                    options={{ 
+                <Stack.Screen
+                    name="MiPerfil"
+                    options={{
                         title: "Mi Perfil",
                         headerRight: () => <HeaderButtons navigation={navigation} />,
                     }}
-                />
+                >
+                    {(props) => <ProfileScreen {...props} isDarkTheme={isDarkTheme} />}
+                </Stack.Screen>
             ) : (
-                <Stack.Screen 
-                    name="RedireccionLogin" 
+                <Stack.Screen
+                    name="RedireccionLogin"
                     component={LoginRedirectScreen}
-                    options={{ 
+                    options={{
                         title: "Acceso Requerido",
                         headerShown: false
                     }}
@@ -234,20 +236,20 @@ const LoginRedirectScreen = ({ navigation }) => {
     }, [navigation]);
 
     return (
-        <View style={{ 
-            flex: 1, 
-            justifyContent: 'center', 
+        <View style={{
+            flex: 1,
+            justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF' 
+            backgroundColor: isDarkTheme ? '#0A0F1C' : '#FFFFFF'
         }}>
-            <MaterialCommunityIcons 
-                name="alert-circle" 
-                size={60} 
-                color="#FF6B6B" 
+            <MaterialCommunityIcons
+                name="alert-circle"
+                size={60}
+                color="#FF6B6B"
             />
-            <Text style={{ 
-                fontSize: 18, 
-                fontWeight: 'bold', 
+            <Text style={{
+                fontSize: 18,
+                fontWeight: 'bold',
                 color: isDarkTheme ? '#FFFFFF' : '#333333',
                 marginTop: 20,
                 textAlign: 'center',
@@ -255,8 +257,8 @@ const LoginRedirectScreen = ({ navigation }) => {
             }}>
                 Debes iniciar sesión para acceder a tu perfil
             </Text>
-            <Text style={{ 
-                fontSize: 14, 
+            <Text style={{
+                fontSize: 14,
                 color: isDarkTheme ? '#8A8D9F' : '#666666',
                 marginTop: 10,
                 textAlign: 'center'
@@ -299,22 +301,22 @@ const AppTabs = () => {
                 },
             }}
         >
-            <Tab.Screen 
-                name="Inicio" 
+            <Tab.Screen
+                name="Inicio"
                 component={HomeStack}
                 options={{
-                    tabBarIcon: ({color, size}) => (
+                    tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="home" size={size} color={color} />
                     ),
                     headerShown: false
                 }}
             />
-            
-            <Tab.Screen 
-                name="Películas" 
+
+            <Tab.Screen
+                name="Películas"
                 component={MoviesStack}
                 options={{
-                    tabBarIcon: ({color, size}) => (
+                    tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="movie" size={size} color={color} />
                     ),
                     headerShown: false
@@ -322,18 +324,18 @@ const AppTabs = () => {
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                         e.preventDefault();
-                        navigation.navigate('Películas', { 
-                            screen: 'ListaPeliculas' 
+                        navigation.navigate('Películas', {
+                            screen: 'ListaPeliculas'
                         });
                     },
                 })}
             />
-            
-            <Tab.Screen 
-                name="Perfil" 
+
+            <Tab.Screen
+                name="Perfil"
                 component={ProfileStack}
                 options={{
-                    tabBarIcon: ({color, size}) => (
+                    tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="account" size={size} color={color} />
                     ),
                     headerShown: false

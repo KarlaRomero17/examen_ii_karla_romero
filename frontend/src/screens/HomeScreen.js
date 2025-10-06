@@ -12,7 +12,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSQLiteContext } from 'expo-sqlite';
 
-const HomeScreen = () => {
+const HomeScreen = ({ isDarkTheme }) => {
     const navigation = useNavigation();
     const isFocused = useIsFocused();
     const db = useSQLiteContext();
@@ -102,13 +102,15 @@ const HomeScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
+        <View style={[styles.container, { backgroundColor: isDarkTheme ? '#0A0F1C' : '#F5F5F5' }]}>
+            <View style={[styles.header, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
                 <View style={styles.welcomeContainer}>
-                    <Text style={styles.welcome}>¡Hola,</Text>
-                    <Text style={styles.username}>{user}!</Text>
+                    <Text style={[styles.welcome, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>¡Hola,</Text>
+                    <Text style={[styles.username, { color: '#FF6B6B' }]}>{user}!</Text>
                 </View>
-                <Text style={styles.subtitle}>Tu colección de películas te espera</Text>
+                <Text style={[styles.subtitle, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>
+                    Tu colección de películas te espera
+                </Text>
             </View>
 
             <ScrollView
@@ -152,27 +154,27 @@ const HomeScreen = () => {
                         />
                     </View>
 
-                    <View style={styles.statsContainer}>
-                        <Text style={styles.statsTitle}>Tu Cine</Text>
+                    <View style={[styles.statsContainer, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
+                        <Text style={[styles.statsTitle, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>Tu Cine</Text>
                         <View style={styles.statsGrid}>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="star" size={24} color="#FFD700" />
-                                <Text style={styles.statNumber}>{movieStats.favorites}</Text>
-                                <Text style={styles.statLabel}>Favoritas</Text>
+                                <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{movieStats.favorites}</Text>
+                                <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Favoritas</Text>
                             </View>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="eye" size={24} color="#4ECDC4" />
-                                <Text style={styles.statNumber}>{movieStats.watched}</Text>
-                                <Text style={styles.statLabel}>Vistas</Text>
+                                <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{movieStats.watched}</Text>
+                                <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Vistas</Text>
                             </View>
                             <View style={styles.statItem}>
                                 <MaterialCommunityIcons name="clock" size={24} color="#FF6B6B" />
-                                <Text style={styles.statNumber}>{movieStats.unwatched}</Text>
-                                <Text style={styles.statLabel}>Por ver</Text>
+                                <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{movieStats.unwatched}</Text>
+                                <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Por ver</Text>
                             </View>
                         </View>
-                        <View style={styles.totalContainer}>
-                            <Text style={styles.totalText}>Total: {movieStats.total} películas</Text>
+                        <View style={[styles.totalContainer, { borderTopColor: isDarkTheme ? '#2A2F3E' : '#E0E0E0' }]}>
+                            <Text style={[styles.totalText, { color: '#FF6B6B' }]}>Total: {movieStats.total} películas</Text>
                         </View>
                     </View>
                 </Animated.View>
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A0F1C',
     },
     header: {
-        paddingTop: 60,
+        paddingTop: 15,
         paddingHorizontal: 25,
         paddingBottom: 20,
         backgroundColor: '#1A1F2E',

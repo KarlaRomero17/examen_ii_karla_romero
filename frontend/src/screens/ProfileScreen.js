@@ -14,11 +14,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../context/UserContext';
 import { useSQLiteContext } from 'expo-sqlite';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ isDarkTheme }) => {
     const navigation = useNavigation();
     const db = useSQLiteContext();
     const { user, setUser } = useContext(UserContext);
-    
+
     const [userData, setUserData] = useState({
         username: '',
         email: '',
@@ -44,7 +44,7 @@ const ProfileScreen = () => {
             const storedUser = await AsyncStorage.getItem('user');
             const storedEmail = await AsyncStorage.getItem('userEmail') || 'cinéfilo@ejemplo.com';
             const joinDate = await AsyncStorage.getItem('userJoinDate') || new Date().toLocaleDateString();
-            
+
             setUserData(prev => ({
                 ...prev,
                 username: storedUser || 'Cinéfilo',
@@ -131,63 +131,63 @@ const ProfileScreen = () => {
     const memberLevel = getMemberLevel();
 
     return (
-        <View style={styles.container}>
-            <ScrollView 
+        <View style={[styles.container, { backgroundColor: isDarkTheme ? '#0A0F1C' : '#F5F5F5' }]}>
+            <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
             >
                 {/* Header del perfil */}
-                <View style={styles.header}>
+                <View style={[styles.header, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
                     <View style={styles.avatarContainer}>
-                        <MaterialCommunityIcons 
-                            name="account" 
-                            size={60} 
-                            color="#FF6B6B" 
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={60}
+                            color="#FF6B6B"
                         />
                         <View style={[styles.levelBadge, { backgroundColor: memberLevel.color }]}>
                             <Text style={styles.levelText}>{memberLevel.level}</Text>
                         </View>
                     </View>
-                    <Text style={styles.username}>{userData.username}</Text>
-                    <Text style={styles.email}>{userData.email}</Text>
-                    <Text style={styles.joinDate}>
+                    <Text style={[styles.username, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{userData.username}</Text>
+                    <Text style={[styles.email, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>{userData.email}</Text>
+                    <Text style={[styles.joinDate, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>
                         🎬 Miembro desde: {userData.joinDate}
                     </Text>
                 </View>
 
                 {/* Estadísticas principales */}
-                <View style={styles.statsContainer}>
-                    <Text style={styles.statsTitle}>Mi Colección</Text>
+                <View style={[styles.statsContainer, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
+                    <Text style={[styles.statsTitle, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>Mi Colección</Text>
                     <View style={styles.statsGrid}>
                         <View style={styles.statItem}>
                             <MaterialCommunityIcons name="movie" size={24} color="#FF6B6B" />
-                            <Text style={styles.statNumber}>{userData.movieStats.total}</Text>
-                            <Text style={styles.statLabel}>Total</Text>
+                            <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{userData.movieStats.total}</Text>
+                            <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Total</Text>
                         </View>
                         <View style={styles.statItem}>
                             <MaterialCommunityIcons name="eye-check" size={24} color="#4ECDC4" />
-                            <Text style={styles.statNumber}>{userData.movieStats.watched}</Text>
-                            <Text style={styles.statLabel}>Vistas</Text>
+                            <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{userData.movieStats.watched}</Text>
+                            <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Vistas</Text>
                         </View>
                         <View style={styles.statItem}>
                             <MaterialCommunityIcons name="star" size={24} color="#FFD700" />
-                            <Text style={styles.statNumber}>{userData.movieStats.favorites}</Text>
-                            <Text style={styles.statLabel}>Favoritas</Text>
+                            <Text style={[styles.statNumber, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>{userData.movieStats.favorites}</Text>
+                            <Text style={[styles.statLabel, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Favoritas</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Estadísticas secundarias */}
                 <View style={styles.secondaryStats}>
-                    <View style={styles.secondaryStat}>
+                    <View style={[styles.secondaryStat, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
                         <MaterialCommunityIcons name="calendar-plus" size={20} color="#45B7D1" />
-                        <Text style={styles.secondaryStatText}>
+                        <Text style={[styles.secondaryStatText, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>
                             {userData.movieStats.recentlyAdded} agregadas esta semana
                         </Text>
                     </View>
-                    <View style={styles.secondaryStat}>
+                    <View style={[styles.secondaryStat, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
                         <MaterialCommunityIcons name="progress-clock" size={20} color="#FF6B6B" />
-                        <Text style={styles.secondaryStatText}>
+                        <Text style={[styles.secondaryStatText, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>
                             {userData.movieStats.total - userData.movieStats.watched} por ver
                         </Text>
                     </View>
@@ -195,23 +195,23 @@ const ProfileScreen = () => {
 
                 {/* Películas recientes */}
                 {recentMovies.length > 0 && (
-                    <View style={styles.recentMoviesContainer}>
-                        <Text style={styles.sectionTitle}>Películas Recientes</Text>
+                    <View style={[styles.recentMoviesContainer, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
+                        <Text style={[styles.sectionTitle, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>Películas Recientes</Text>
                         {recentMovies.map((movie, index) => (
-                            <View key={movie.id} style={styles.recentMovieCard}>
+                            <View key={movie.id} style={[styles.recentMovieCard, { backgroundColor: isDarkTheme ? '#2A2F3E' : '#F8F9FA' }]}>
                                 <View style={styles.movieInfo}>
-                                    <Text style={styles.movieTitle} numberOfLines={1}>
+                                    <Text style={[styles.movieTitle, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]} numberOfLines={1}>
                                         {movie.title}
                                     </Text>
-                                    <Text style={styles.movieDetails}>
+                                    <Text style={[styles.movieDetails, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>
                                         {movie.year} • {movie.genre}
                                         {movie.rating && ` • ⭐${movie.rating}`}
                                     </Text>
                                 </View>
-                                <MaterialCommunityIcons 
-                                    name={movie.watched === 1 ? "eye-check" : "eye-off"} 
-                                    size={20} 
-                                    color={movie.watched === 1 ? "#4ECDC4" : "#8A8D9F"} 
+                                <MaterialCommunityIcons
+                                    name={movie.watched === 1 ? "eye-check" : "eye-off"}
+                                    size={20}
+                                    color={movie.watched === 1 ? "#4ECDC4" : "#8A8D9F"}
                                 />
                             </View>
                         ))}
@@ -225,7 +225,7 @@ const ProfileScreen = () => {
                         <Text style={styles.actionButtonText}>Editar Perfil</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={[styles.actionButton, styles.secondaryButton]}
                         onPress={() => navigation.navigate('Películas', { screen: 'AgregarPelicula' })}
                     >
@@ -235,7 +235,7 @@ const ProfileScreen = () => {
                         </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={[styles.actionButton, styles.dangerButton]}
                         onPress={handleClearData}
                     >
@@ -247,32 +247,32 @@ const ProfileScreen = () => {
                 </View>
 
                 {/* Logros */}
-                <View style={styles.achievementsContainer}>
-                    <Text style={styles.sectionTitle}>Logros Cinéfilos</Text>
+                <View style={[styles.achievementsContainer, { backgroundColor: isDarkTheme ? '#1A1F2E' : '#FFFFFF' }]}>
+                    <Text style={[styles.sectionTitle, { color: isDarkTheme ? '#FFFFFF' : '#333333' }]}>Logros Cinéfilos</Text>
                     <View style={styles.achievementsGrid}>
                         <View style={styles.achievement}>
-                            <MaterialCommunityIcons 
-                                name="trophy" 
-                                size={24} 
-                                color={userData.movieStats.total >= 10 ? "#FFD700" : "#8A8D9F"} 
+                            <MaterialCommunityIcons
+                                name="trophy"
+                                size={24}
+                                color={userData.movieStats.total >= 10 ? "#FFD700" : "#8A8D9F"}
                             />
-                            <Text style={styles.achievementText}>Primeras 10</Text>
+                            <Text style={[styles.achievementText, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Primeras 10</Text>
                         </View>
                         <View style={styles.achievement}>
-                            <MaterialCommunityIcons 
-                                name="trophy-award" 
-                                size={24} 
-                                color={userData.movieStats.total >= 25 ? "#C0C0C0" : "#8A8D9F"} 
+                            <MaterialCommunityIcons
+                                name="trophy-award"
+                                size={24}
+                                color={userData.movieStats.total >= 25 ? "#C0C0C0" : "#8A8D9F"}
                             />
-                            <Text style={styles.achievementText}>Coleccionista</Text>
+                            <Text style={[styles.achievementText, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Coleccionista</Text>
                         </View>
                         <View style={styles.achievement}>
-                            <MaterialCommunityIcons 
-                                name="crown" 
-                                size={24} 
-                                color={userData.movieStats.total >= 50 ? "#FF6B6B" : "#8A8D9F"} 
+                            <MaterialCommunityIcons
+                                name="crown"
+                                size={24}
+                                color={userData.movieStats.total >= 50 ? "#FF6B6B" : "#8A8D9F"}
                             />
-                            <Text style={styles.achievementText}>Expert@</Text>
+                            <Text style={[styles.achievementText, { color: isDarkTheme ? '#8A8D9F' : '#666666' }]}>Expert@</Text>
                         </View>
                     </View>
                 </View>

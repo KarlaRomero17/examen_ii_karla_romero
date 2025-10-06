@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: '#1A1F2E',
-        paddingTop: 50,
+        paddingTop: 30,
         paddingHorizontal: 20,
         paddingBottom: 15,
         borderBottomLeftRadius: 20,
