@@ -128,7 +128,7 @@ const DataEntryScreen = () => {
 
         } catch (error) {
             console.error('Error guardando película:', error);
-            Alert.alert("❌ Error", "No se pudo guardar la película");
+            Alert.alert("Error", "No se pudo guardar la película");
         }
     };
 

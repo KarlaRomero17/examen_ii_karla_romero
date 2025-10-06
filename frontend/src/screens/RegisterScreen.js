@@ -284,12 +284,12 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         padding: 25,
-        paddingTop: 30,
+        paddingTop: 15,
     },
     logoContainer: {
         alignItems: 'center',
         justifyContent: 'center', 
-        marginBottom: 20,
+        marginBottom: 15,
         width: '100%',
         height: 150,
         position: 'relative',
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         color: '#8A8D9F',
-        marginBottom: 40,
+        marginBottom: 10,
         fontWeight: '300',
     },
     formContainer: {
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     inputContainer: {
-        marginBottom: 20,
+        marginBottom: 10,
     },
     inputLabel: {
         fontSize: 16,
